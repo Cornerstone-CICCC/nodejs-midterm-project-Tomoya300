@@ -1,0 +1,66 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../styles/global.css"
+import Footer from "../components/footer.astro";
+---
+
+<Layout>
+    <main class="flex justify-center items-center h-full flex-col">
+        <h1 class="text-4xl mb-20">Sign up</h1>
+        <div>
+            <form action="/user/signup" method="post" id="signup-form" class="flex flex-col w-[300px]">
+                <label for="firstname">First name</label>
+                <input type="text" id="firstname" name="firstname" placeholder="Enter first name" required class="shadow-[0_0_1px] rounded-[5px] my-2 p-1">
+                <label for="lastname">Last name</label>
+                <input type="text" id="lastname" name="lastname" placeholder="Enter last name" required class="shadow-[0_0_1px] rounded-[5px] my-2 p-1">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter username" required class="shadow-[0_0_1px] rounded-[5px] my-2 p-1">
+                <label for="password">Password</label>
+                <input type="text" id="password" name="password" placeholder="Enter password" required class="shadow-[0_0_1px] rounded-[5px] my-2 p-1">
+                <button type="submit" id="signup-btn" class="shadow-[0_0_1px] rounded-[5px] my-4">Sign Up</button>
+            </form>
+        </div>
+        <div>
+            <p>Already have an account? <a href="/login" class="underline">log in</a></p>
+        </div>
+    </main>
+    <Footer />
+</Layout>
+
+<script>
+    const signupForm = document.getElementById("signup-form") as HTMLFormElement
+    // const signupBtn = document.getElementById("signup-btn") as HTMLButtonElement
+
+    const sendUser = async (firstname: string, lastname: string, username: string, password: string) => {
+        const res = await fetch(`http://localhost:3000/user/signup`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ firstname, lastname, username, password }),
+            credentials: "include"
+        })
+        
+        if (!res.ok) {
+            console.error('something went wrong')
+            return
+        }
+        const data = await res.json()
+        return data
+    }
+
+    signupForm.addEventListener('submit', async(e) => {
+        e.preventDefault()
+        const firstname = (document.getElementById('firstname') as HTMLInputElement).value
+        const lastname = (document.getElementById('lastname') as HTMLInputElement).value
+        const username = (document.getElementById('username') as HTMLInputElement).value
+        const password = (document.getElementById('password') as HTMLInputElement).value
+
+        sendUser(firstname, lastname, username, password)
+
+        alert(`Redirecting to log in page in 3 seconds...`)
+        setTimeout(() => {
+            window.location.href = '/login'
+        }, 3000);
+    })
+</script>

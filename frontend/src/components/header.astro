@@ -1,0 +1,54 @@
+---
+import "../styles/global.css"
+import userIcon from "../assets/user-icon.png"
+---
+<header class="w-full flex p-8 items-center justify-around bg-gray-100 relative">
+    <div class="profile-menu absolute top-[80px] right-[10px] border w-[130px] h-fit opacity-0 rounded-[10px] bg-white transition">
+        <ul>
+            <li class="p-2 border-b text-center"><a href="/profile">Profile</a></li>
+            <li class="p-2 border-b text-center"><a href="#">Setting</a></li>
+            <li class="p-2 text-center"><a href="#">Log out</a></li>
+        </ul>
+    </div>
+    <div class="logo">
+        <span class="font-bold text-2xl">Chillboard</span>
+    </div>
+    <div class="search-container w-full h-full min-w-[50vw] max-w-[600px]">
+        <div class="search-bar-box m-auto shadow-[0_0_1px] rounded-[10px] w-[90%] h-[28px]">
+            <form>
+            <input type="text" name="search" placeholder="Search post" class="w-full h-[28px] rounded-[10px] shadow-[0_0_1px] outline-none p-1"/>
+            </form>
+        </div>
+    </div>
+    <div class="login-box w-fit">
+        <button class="shadow-[0_0_1px] rounded-[20px] w-[100px] p-2 bg-green-500 text-white hover:opacity-75 transition"><a href="/login">Log in</a></button>
+    </div>
+    <div class="signup-box w-fit">
+        <button class="shadow-[0_0_1px] rounded-[20px] w-[100px] p-2 bg-green-500 text-white hover:opacity-75 transition"><a href="/register">Sign up</a>
+        </button>
+    </div>
+
+    <div class="w-fit user-icon">
+        <img src={userIcon.src} alt="user icon" class="w-[45px] cursor-pointer">
+    </div>
+</header>
+
+<script>
+    const userIcon = document.querySelector('.user-icon') as HTMLDivElement
+    const profileMenu = document.querySelector('.profile-menu') as HTMLDivElement
+
+    userIcon.addEventListener('click', () => {
+        console.log('clicked')
+        if (profileMenu.classList.contains('opacity-0')) {
+            profileMenu.classList.remove('opacity-0')
+        } else {
+            profileMenu.classList.add('opacity-0')
+        }
+    }) 
+
+    document.addEventListener("click", function (e) {
+        if (!profileMenu.contains(e.target as HTMLElement) && !userIcon.contains(e.target as HTMLElement) && !profileMenu.classList.contains('opacity-0')) {
+                profileMenu.classList.add('opacity-0');
+        }
+    });
+</script>

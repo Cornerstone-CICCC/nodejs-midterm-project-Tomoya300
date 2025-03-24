@@ -1,0 +1,69 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <main>
+        <h1>User Profile</h1>
+        <div>
+            <div>
+                <p>Username: <span id="username"></span></p>
+            </div>
+            <div>
+                <p>First name: <span id="firstname"></span></p>
+            </div>
+            <div>
+                <p>Last name: <span id="lastname"></span></p>
+            </div>
+        </div>
+        <button type="submit" id="logout-btn">Log out</button>
+    </main>
+</Layout>
+
+<script>
+    const username = document.getElementById("username") as HTMLSpanElement
+    const firstname = document.getElementById("firstname") as HTMLSpanElement
+    const lastname = document.getElementById("lastname") as HTMLSpanElement
+    const logoutBtn = document.getElementById("logout-btn") as HTMLButtonElement
+
+    const getProfile = async() => {
+        const res = await fetch(`http://localhost:3000/user/check-auth`, {
+            method: "GET",
+            credentials: "include"  
+        })
+        if (!res.ok) {
+            console.error("Something went wrong")
+            return
+        }
+        const data = await res.json()
+        username.innerHTML = data.username
+        firstname.innerHTML = data.firstname
+        lastname.innerHTML = data.lastname
+    }
+
+    const logoutUser = async() => {
+        const res = await fetch(`http://localhost:3000/user/logout`, {
+            method: "GET",
+            credentials: "include"
+        })
+
+        if (!res.ok) {
+            console.error('something went wrong')
+            return
+        }
+    }
+
+    logoutBtn.addEventListener('click', async(e) => {
+        e.preventDefault()
+        await logoutUser()
+
+        setTimeout(() => {
+            window.location.href='/login'
+        }, 1000);
+        console.log(`User logged out successfully`)
+
+    })
+
+    getProfile()
+    
+</script>
