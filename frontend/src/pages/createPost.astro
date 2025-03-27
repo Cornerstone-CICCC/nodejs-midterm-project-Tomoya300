@@ -1,0 +1,76 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../styles/global.css"
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
+import Sidemenu from "../components/sidemenu.astro";
+---
+
+<Layout>
+    <Header />
+    <main class="w-full h-full flex">
+        <Sidemenu />
+        <div class="p-4 mx-auto">
+            <h1 class="text-4xl pl-10">Create post</h1>
+            <form action="/post/create" method="POST" id="create-post" class="flex flex-col w-full ">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter title" required class="w-full shadow-[0_0_1px] rounded-[10px] my-4 p-2">
+                <label for="body">Body</label>
+                <textarea name="body" id="body" placeholder="Enter body" required class="w-[600px] shadow-[0_0_1px] rounded-[5px] my-4 h-[100px]"></textarea>
+                <button type="submit" class="w-full shadow-[0_0_1px] rounded-[5px]">Post</button>
+            </form>
+        </div>
+    </main>
+    <Footer />
+</Layout>
+
+<script>
+    const postForm = document.getElementById('create-post') as HTMLFormElement
+
+    const createPost = async(title: string, body: string) => {
+        const res = await fetch(`http://localhost:3000/post/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({title, body}),
+            credentials: "include"
+        })
+
+        
+        if (!res.ok) {
+            console.error(`something went wrong`)
+            return
+        }
+        const data = await res.json()
+        console.log(data)
+        return data
+    }
+
+    postForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        
+        const title = (document.getElementById('title') as HTMLInputElement).value.trim()
+        const body = (document.getElementById('body') as HTMLTextAreaElement).value.trim()
+
+        if (!title || !body) {
+            console.error('Title or body is empty')
+            return
+        }
+
+        const newPost = await createPost(title, body)
+        
+
+        if (newPost) {
+            setTimeout(() => {
+                window.location.href = '/'
+            }, 2000);
+            alert('post submitted')
+            console.log(`${newPost.title} is posted`)
+        } else {
+            alert(`post failed`)
+        }
+    })
+
+    
+</script>

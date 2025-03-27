@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/header.astro';
+import Footer from '../components/footer.astro';
+import Sidemenu from '../components/sidemenu.astro';
+---
+
+<Layout>
+    <Header />
+    <main class="h-full w-full flex">
+        <Sidemenu />
+        <div class="post-field w-full">
+            <div class="flex justify-between p-4">
+                <h2 class="text-2xl mx-4 pl-10">Latest posts</h2>
+                <button class="create-btn shadow-[0_0_1px] rounded-[20px] p-2 w-[130px] cursor-pointer  bg-white hover:border">Create post</button>
+            </div>
+
+            <div class="latest-post ">
+                <ul class="post-container w-full px-20"></ul>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>
+
+<script>
+    const createBtn = document.querySelector('.create-btn') as HTMLButtonElement
+    const postContainer = document.querySelector('.post-container') as HTMLUListElement
+
+    interface Post {
+        id: string,
+        title: string,
+        body: string,
+        createdAt: Date,
+        updatedAt: Date,
+    }
+
+    const checkAuth = async () => {
+        const res = await fetch(`http://localhost:3000/user/check-auth`, {
+            method: "GET",
+            credentials: "include"
+        })
+        if (!res.ok) {
+            console.error('something went wrong')
+            return 
+        }
+        const data = await res.json()
+        return data
+    }
+
+    createBtn.addEventListener('click', async () => {
+        const user = await checkAuth()
+        if (user) {
+            window.location.href = '/createPost'
+        } else {
+            window.location.href = '/login'
+        }
+    })
+
+    const getPost = async () => {
+        const res = await fetch(`http://localhost:3000/post/posts`, {
+            method: "GET",
+            credentials: "include"
+        })
+
+        if (!res.ok) {
+            console.error('something went wrong')
+            return 
+        }
+
+        const data = await res.json()
+
+        console.log(data)
+
+        data.forEach((post: Post) => {
+            const newPost = document.createElement('div')
+            const title = document.createElement('h1')
+            const body = document.createElement('p')
+            const deleteBtn = document.createElement('button')
+
+            title.innerHTML = post.title
+            body.innerHTML = post.body
+            deleteBtn.textContent = 'Delete'
+
+            newPost.classList.add('w-full', 'h-[30vh]', 'overflow-hidden', 'max-h-[500px]', 'shadow-[0_0_1px]', 'rounded-[5px]', 'my-2', 'p-4', 'relative')
+            title.classList.add('text-2xl', 'pb-2')
+            body.classList.add('pl-2')
+            deleteBtn.classList.add('delete-btn', 'shadow-[0_0_1px]', 'rounded-[5px]', 'absolute', 'top-[15px]', 'right-[15px]', 'px-2')
+
+            deleteBtn.addEventListener('click', () => {
+                const prevOverlay = document.querySelector('.overlay') as HTMLDivElement
+                if (prevOverlay) {
+                    prevOverlay.remove()
+                }
+                const overlay = document.createElement('div')
+                const modal = document.createElement('div')
+                const checkDelete = document.createElement('p')
+                const yesBtn = document.createElement('button')
+                const noBtn = document.createElement('button')
+                const btnContainer = document.createElement('div')
+
+                overlay.classList.add('w-screen', 'h-screen', 'fixed', 'overlay', 'top-0', 'left-0', 'justify-center', 'items-center', 'flex', 'justify-center', 'items-center')
+                overlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+                modal.classList.add('modal', 'w-[40vw]', 'h-[30vh]', 'bg-white', 'rounded-[10px]', 'p-10', 'flex', 'flex-col', 'items-center', 'gap-10')
+                btnContainer.classList.add('flex', 'w-full', 'justify-around', 'items-center')
+                yesBtn.classList.add('delete-yes', 'bg-green-300', 'rounded-[10px]', 'p-1', 'w-[100px]')
+                noBtn.classList.add('delete-no', 'bg-green-300', 'rounded-[10px]', 'p-1', 'w-[100px]')
+                
+                checkDelete.textContent = 'Are you sure you want to delete this post?'
+                yesBtn.textContent = 'Yes'
+                noBtn.textContent = 'Cancel'
+
+                modal.appendChild(checkDelete)
+                btnContainer.appendChild(yesBtn)
+                btnContainer.appendChild(noBtn)
+                modal.appendChild(btnContainer)
+                overlay.appendChild(modal)
+
+                document.body.appendChild(overlay)
+
+                yesBtn.addEventListener('click', async () => {
+                    console.log('button clicked')
+                    const res = await fetch(`http://localhost:3000/post/delete/${post.id}`, {
+                        method: "DELETE",
+                        credentials: "include"
+                    })
+
+                    if (!res.ok) {
+                        console.error('Failed to delete')
+                        return
+                    }
+
+                    const currOverlay = document.querySelector('.overlay') as HTMLDivElement
+
+                    currOverlay.remove()
+                    newPost.remove()
+                })
+
+                noBtn.addEventListener('click', () => {
+                    const currOverlay = document.querySelector('.overlay') as HTMLDivElement
+                    currOverlay.remove()
+                })
+
+            })
+            
+            newPost.appendChild(title)
+            newPost.appendChild(body)
+            newPost.appendChild(deleteBtn)
+
+            postContainer.appendChild(newPost)
+        })
+    }
+
+
+
+    getPost()
+
+</script>

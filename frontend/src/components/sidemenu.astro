@@ -1,0 +1,83 @@
+---
+import "../styles/global.css"
+---
+<div class="side-menu bg-gray-100 w-[15vw]"> 
+    <div>
+        <div class="border-b w-full p-4 ">
+            <a href="/" class="text-lg pl-6">Home</a>
+        </div>
+        <div class="w-full py-4 border-b">
+            <p class="topic default text-lg mx-6 relative cursor-pointer">Topic</p>
+            <div class="dropdown max-h-0 overflow-hidden transition">
+                <ul class="w-full border-t mt-4">
+                    <li class="pl-8 py-2 hover:bg-white cursor-pointer">
+                        <a href="#" class="w-full text-xl">life</a>
+                    </li>
+                    <li class="pl-8 py-2 hover:bg-white cursor-pointer">
+                        <a href="#" class="w-full text-xl">work</a>
+                    </li>
+                    <li class="pl-8 py-2 hover:bg-white cursor-pointer">
+                        <a href="#" class="w-full text-xl">game</a>
+                    </li>
+                    <li class="pl-8 py-2 hover:bg-white cursor-pointer">
+                        <a href="#" class="w-full text-xl">leisure</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .default::after{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        content: "";
+        vertical-align: middle;
+        width: 0.4em; 
+        height: 0.4em; 
+        border-top: 1px solid #060606; 
+        border-right: 1px solid #000000;
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+        transition: all 0.2s ease;
+    }
+
+    .rotated::after{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        content: "";
+        vertical-align: middle;
+        width: 0.4em;
+        height: 0.4em; 
+        border-top: 1px solid #060606;
+        border-right: 1px solid #000000;
+        -webkit-transform: rotate(135deg);
+        transform: rotate(135deg);
+        transition: all 0.2s ease;
+    }
+</style>
+
+<script>
+    const topic = document.querySelector('.topic') as HTMLParagraphElement
+    const dropdown = document.querySelector('.dropdown') as HTMLDivElement
+
+    topic.addEventListener('click', () => {
+        if (topic.classList.contains('default')) {
+            topic.classList.remove('default')
+            topic.classList.add('rotated')
+            dropdown.classList.remove('max-h-0')
+        } else {
+            topic.classList.remove('rotated')
+            topic.classList.add('default')
+            dropdown.classList.add('max-h-0')
+        }
+    })
+</script>

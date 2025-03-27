@@ -1,0 +1,63 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../styles/global.css"
+import Footer from "../components/footer.astro";
+---
+
+<Layout>
+    <main class="flex justify-center items-center h-full flex-col">
+        <h1 class="text-4xl mb-20">Log in</h1>
+        <div>
+            <form action="/user/login" method="post" id="login-form" class="flex flex-col w-[300px]">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter username" required class="shadow-[0_0_1px] rounded-[5px] my-2 p-1">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required class="shadow-[0_0_1px] rounded-[5px] my-2 p-1">
+                <button type="submit" class="shadow-[0_0_1px] rounded-[5px] my-4">Log In</button>
+            </form>
+        </div>
+        <div class="my-4">
+            <p>Haven't registered yet? <a href="/register" class="underline">sign up</a></p>
+        </div>
+    </main>
+    <Footer />
+</Layout>
+
+<script>
+    const loginForm = document.getElementById('login-form') as HTMLFormElement
+
+    const loginUser = async (username: string, password: string) => {
+        const res = await fetch(`http://localhost:3000/user/login`, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({ username, password }),
+            credentials: "include"
+        })
+
+        if (!res.ok) {
+            console.error(`something went wrong`)
+            return
+        }
+        const data = await res.json()
+        return data
+    }
+
+    loginForm.addEventListener('submit', async(e) => {
+        e.preventDefault()
+        const username = (document.getElementById('username') as HTMLInputElement).value
+        const password = (document.getElementById('password') as HTMLInputElement).value
+
+        const loggedinUser = await loginUser(username, password)
+
+        if (loggedinUser) {
+            setTimeout(() => {
+                window.location.href = '/profile'
+            }, 1000);
+            console.log(`${loggedinUser.username} logged in`)
+        } else {
+            alert(`login failed`)
+        }
+    })
+</script>
