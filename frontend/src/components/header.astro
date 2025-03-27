@@ -3,7 +3,7 @@ import "../styles/global.css"
 import userIcon from "../assets/user-icon.png"
 ---
 <header class="w-full flex p-8 items-center justify-around bg-gray-100 relative">
-    <div class="profile-menu absolute top-[80px] right-[10px] border w-[130px] h-fit opacity-0 rounded-[10px] bg-white transition">
+    <div class="profile-menu absolute top-[80px] right-[10px] border w-[130px] h-fit opacity-0 pointer-events-none rounded-[10px] bg-white transition">
         <ul>
             <li class="p-2 border-b text-center"><a href="/profile">Profile</a></li>
             <li class="p-2 border-b text-center"><a href="#">Setting</a></li>
@@ -11,7 +11,7 @@ import userIcon from "../assets/user-icon.png"
         </ul>
     </div>
     <div class="logo">
-        <span class="font-bold text-2xl">Chillboard</span>
+        <span class="font-bold text-2xl"><a href="/">Chillboard</a></span>
     </div>
     <div class="search-container w-full h-full min-w-[50vw] max-w-[600px]">
         <div class="search-bar-box m-auto shadow-[0_0_1px] rounded-[10px] w-[90%] h-[28px]">
@@ -28,7 +28,7 @@ import userIcon from "../assets/user-icon.png"
         </button>
     </div>
 
-    <div class="w-fit user-icon">
+    <div class="w-fit user-icon hidden">
         <img src={userIcon.src} alt="user icon" class="w-[45px] cursor-pointer">
     </div>
 </header>
@@ -36,13 +36,18 @@ import userIcon from "../assets/user-icon.png"
 <script>
     const userIcon = document.querySelector('.user-icon') as HTMLDivElement
     const profileMenu = document.querySelector('.profile-menu') as HTMLDivElement
+    const signupBox = document.querySelector('.signup-box') as HTMLDivElement
+    const loginBox = document.querySelector('.login-box') as HTMLDivElement
+
 
     userIcon.addEventListener('click', () => {
         console.log('clicked')
         if (profileMenu.classList.contains('opacity-0')) {
             profileMenu.classList.remove('opacity-0')
+            profileMenu.classList.remove('pointer-events-none')
         } else {
             profileMenu.classList.add('opacity-0')
+            profileMenu.classList.add('pointer-events-none')
         }
     }) 
 
@@ -51,4 +56,27 @@ import userIcon from "../assets/user-icon.png"
                 profileMenu.classList.add('opacity-0');
         }
     });
+
+    const checkAuth = async () => {
+        const res = await fetch(`http://localhost:3000/user/check-auth`, {
+            method: "GET",
+            credentials: "include"
+        })
+        if (!res.ok) {
+            console.error('something went wrong')
+            return 
+        }
+        const data = await res.json()
+        if (data) {
+            userIcon.classList.remove('hidden')
+            loginBox.classList.add('hidden')
+            signupBox.classList.add('hidden')
+        } else {
+            userIcon.classList.add('hidden')
+            loginBox.classList.remove('hidden')
+            signupBox.classList.remove('hidden')
+        }
+    }
+
+    checkAuth()
 </script>

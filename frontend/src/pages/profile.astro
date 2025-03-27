@@ -1,23 +1,31 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
+import Sidemenu from "../components/sidemenu.astro";
 ---
 
 <Layout>
-    <main>
-        <h1>User Profile</h1>
-        <div>
-            <div>
-                <p>Username: <span id="username"></span></p>
+    <Header />
+    <main class="w-full h-full flex">
+        <Sidemenu />
+        <div class="profile-field flex flex-col px-20 w-full h-full">
+            <h1 class="text-4xl my-8">User Profile</h1>
+            <div class="flex flex-col gap-4 p-4">
+                <div>
+                    <p class="text-xl">Username: <span id="username" class="pl-4"></span></p>
+                </div>
+                <div>
+                    <p class="text-xl">First name: <span id="firstname" class="pl-4"></span></p>
+                </div>
+                <div>
+                    <p class="text-xl">Last name: <span id="lastname" class="pl-4"></span></p>
+                </div>
             </div>
-            <div>
-                <p>First name: <span id="firstname"></span></p>
-            </div>
-            <div>
-                <p>Last name: <span id="lastname"></span></p>
-            </div>
+            <button type="submit" id="logout-btn" class="w-[130px] shadow-[0_0_1px] p-2 rounded-[20px] mt-6 cursor-pointer">Log out</button>
         </div>
-        <button type="submit" id="logout-btn">Log out</button>
     </main>
+    <Footer />
 </Layout>
 
 <script>
@@ -36,6 +44,7 @@ import Layout from "../layouts/Layout.astro";
             return
         }
         const data = await res.json()
+        console.log(data)
         username.innerHTML = data.username
         firstname.innerHTML = data.firstname
         lastname.innerHTML = data.lastname
@@ -58,7 +67,7 @@ import Layout from "../layouts/Layout.astro";
         await logoutUser()
 
         setTimeout(() => {
-            window.location.href='/login'
+            window.location.href='/'
         }, 1000);
         console.log(`User logged out successfully`)
 

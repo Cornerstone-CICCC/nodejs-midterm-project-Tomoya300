@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import userRouter from './routes/user.routes'
+import postRouter from './routes/post.routes'
 import cors from 'cors'
 import cookieSession from 'cookie-session'
 
@@ -35,6 +36,7 @@ app.use(cookieSession({
 }))
 
 app.use('/user', userRouter)
+app.use('/post', postRouter)
 
 
 app.get('/', (req: Request, res: Response) => {

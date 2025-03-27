@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
+const post_routes_1 = __importDefault(require("./routes/post.routes"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_session_1 = __importDefault(require("cookie-session"));
 dotenv_1.default.config();
@@ -32,6 +33,7 @@ app.use((0, cookie_session_1.default)({
     maxAge: 24 * 60 * 60 * 1000
 }));
 app.use('/user', user_routes_1.default);
+app.use('/post', post_routes_1.default);
 app.get('/', (req, res) => {
     console.log('someone visiting the server');
     res.status(200).send('Welcome to my server!');

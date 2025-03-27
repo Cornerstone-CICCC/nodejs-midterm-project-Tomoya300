@@ -42,9 +42,15 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     console.log('Session data:', req.session);
     if (req.session) {
+        req.session.isLoggedIn = false;
+        req.session.username = '';
+        req.session.userId = '';
+    }
+    if (req.session) {
         console.log('Session data two:', req.session);
         req.session.isLoggedIn = true;
         req.session.username = thisUser.username;
+        req.session.userId = thisUser.id;
     }
     console.log(`${thisUser.username} logged in`);
     res.status(200).json(thisUser);
@@ -54,6 +60,9 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!username || !password || !firstname || !lastname) {
         res.status(500).send('One or more information is missing');
         return;
+    }
+    if (req.session) {
+        req.session = null;
     }
     const newUser = yield user_model_1.default.create({ username, password, firstname, lastname });
     if (!newUser) {

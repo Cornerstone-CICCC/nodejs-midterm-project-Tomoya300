@@ -54,7 +54,7 @@ import Footer from "../components/footer.astro";
         if (loggedinUser) {
             setTimeout(() => {
                 window.location.href = '/profile'
-            }, 2000);
+            }, 1000);
             console.log(`${loggedinUser.username} logged in`)
         } else {
             alert(`login failed`)
